@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST='{"app/page.tsx -> hls.js":{"id":8309,"files":["static/chunks/a4634e51.2cfacc1646c5a90b.js"]}}';

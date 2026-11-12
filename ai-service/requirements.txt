@@ -1,0 +1,12 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+smolagents[litellm]==1.26.0
+# LiteLLM 1.106.x imports its optional MCP proxy dependency on tool calls.
+litellm==1.105.1
+SQLAlchemy[asyncio]>=2.0,<3
+asyncpg>=0.29,<1
+alembic>=1.14,<2
+pydantic-settings>=2.6,<3
+httpx>=0.27,<1
+ddgs>=9.0,<10
+psycopg[binary]>=3.2,<4

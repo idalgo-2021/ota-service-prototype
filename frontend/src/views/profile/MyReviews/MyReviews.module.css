@@ -1,0 +1,176 @@
+.root {
+  display: grid;
+  gap: 24px;
+}
+
+.section {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.section h2 {
+  margin: 0;
+  color: #2d3137;
+  font-size: 21px;
+  line-height: 28px;
+}
+
+.message {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  color: #555b63;
+}
+
+.message button {
+  margin-left: 5px;
+  color: #0e41d2;
+  text-decoration: underline;
+}
+
+.subject {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.subject strong {
+  max-width: 220px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 150px;
+  color: #555b63;
+  font-size: 13px;
+}
+
+.reviewCell {
+  min-width: 220px;
+  max-width: 380px;
+  overflow-wrap: anywhere;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #2d3137;
+  background: #e7ecfb;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.reason {
+  display: block;
+  margin: 6px 0 0;
+  color: #a42922;
+}
+
+.editButton {
+  display: block;
+  margin-top: 8px;
+  color: #0e41d2;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.editButton:focus-visible,
+.formActions button:focus-visible,
+.editor summary:focus-visible {
+  outline: 2px solid #0e41d2;
+  outline-offset: 2px;
+}
+
+.editor {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #c8c8c8;
+  border-radius: 14px;
+  background: white;
+}
+
+.editor h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.editor label {
+  display: grid;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.editor input,
+.editor select,
+.editor textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #c8c8c8;
+  border-radius: 8px;
+  background: white;
+  color: #2d3137;
+  font: inherit;
+}
+
+.editor textarea {
+  resize: vertical;
+}
+
+.editor summary {
+  margin-bottom: 12px;
+  color: #0e41d2;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.formMessage {
+  margin: 0;
+  color: #a42922;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.formActions button {
+  min-height: 40px;
+  padding: 8px 13px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.formActions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.primaryButton {
+  color: white;
+  background: #0e41d2;
+}
+
+.secondaryButton {
+  color: #0e41d2;
+  background: #e7ecfb;
+}

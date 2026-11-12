@@ -1,0 +1,9 @@
+# Local PostgreSQL files are mounted at runtime and must not enter the image build context.
+_data/
+
+# Keep developer credentials out of the build context.
+.env
+.env.*
+!.env.example
+
+.git/

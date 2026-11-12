@@ -1,0 +1,172 @@
+services:
+  db:
+    image: imresamu/postgis:16-3.5-alpine
+    restart: unless-stopped
+    env_file:
+      - path: ./backend/.env
+        required: false
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./backend/_data/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ota-backend:latest
+    entrypoint: ["/app/migrate"]
+    command: ["init"]
+    restart: "no"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ota-backend:latest
+    restart: unless-stopped
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      AI_SERVICE_BASE_URL: ${AI_SERVICE_BASE_URL:-http://ai-service:8090}
+    ports:
+      - "${HTTP_SERVER_PORT:-8080}:8080"
+    volumes:
+      - ./backend/_media:/app/_media
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  maintenance:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ota-backend:latest
+    profiles: ["maintenance"]
+    entrypoint: ["/app/maintenance"]
+    restart: "no"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      AI_SERVICE_BASE_URL: ${AI_SERVICE_BASE_URL:-http://ai-service:8090}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ai-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - path: ./ai-service/.env
+        required: false
+    environment:
+      POSTGRES_USER: ${AI_POSTGRES_USER:-ai_service}
+      POSTGRES_PASSWORD: ${AI_POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${AI_POSTGRES_DB:-ai_service}
+    ports:
+      - "${AI_DB_PORT:-55432}:5432"
+    volumes:
+      - ./ai-service/_data/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    image: ota-ai-service:latest
+    restart: unless-stopped
+    env_file:
+      - path: ./ai-service/.env
+        required: false
+    environment:
+      AI_DB_HOST: ai-db
+      AI_DB_PORT: 5432
+      OTA_API_BASE_URL: http://backend:${HTTP_SERVER_PORT:-8080}
+      AI_INTERNAL_API_KEY: ${AI_INTERNAL_API_KEY:-change-me-ai-internal-key}
+    ports:
+      - "${AI_PORT:-8090}:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/ready', timeout=3)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      ai-db:
+        condition: service_healthy
+    networks:
+      default:
+        aliases:
+          - ai-api
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://backend:8080
+    image: ota-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  musya-video:
+    build:
+      context: ./musya-video
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://backend:8080
+    image: ota-musya-video:latest
+    restart: unless-stopped
+    ports:
+      - "${MUSYA_VIDEO_PORT:-3002}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

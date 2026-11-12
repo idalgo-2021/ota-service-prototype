@@ -1,0 +1,78 @@
+services:
+  db:
+    image: imresamu/postgis:16-3.5-alpine
+    restart: unless-stopped
+    env_file:
+      - path: ./.env
+        required: true
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./_data/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["/app/migrate"]
+    command: ["init"]
+    restart: "no"
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      AI_SERVICE_BASE_URL: ${AI_SERVICE_BASE_URL:-http://localhost:8090}
+    ports:
+      - "${HTTP_SERVER_PORT:-8080}:8080"
+    volumes:
+      - ./_media:/app/_media
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:$${HTTP_SERVER_PORT:-8080}/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  maintenance:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["maintenance"]
+    entrypoint: ["/app/maintenance"]
+    restart: "no"
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      AI_SERVICE_BASE_URL: ${AI_SERVICE_BASE_URL:-http://localhost:8090}
+    depends_on:
+      db:
+        condition: service_healthy

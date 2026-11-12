@@ -1,0 +1,1 @@
+export { SearchSummary } from './SearchSummary';

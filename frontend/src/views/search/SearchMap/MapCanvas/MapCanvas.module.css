@@ -1,0 +1,605 @@
+.map {
+  z-index: 0;
+  font-family: inherit;
+}
+.adding .map {
+  cursor: crosshair;
+}
+.map :global(.ol-attribution) {
+  background: #ffffffcc;
+  font-size: 10px;
+}
+.map :global(.ol-scale-line) {
+  bottom: 8px;
+  left: 8px;
+}
+.map :global(.ol-overlaycontainer-stopevent) {
+  pointer-events: none;
+}
+.map :global(.ol-overlaycontainer-stopevent > *) {
+  pointer-events: auto;
+}
+.price {
+  display: block;
+  line-height: 26px;
+  text-align: center;
+  width: max-content;
+  min-width: 82px;
+  max-width: 200px;
+  height: 28px;
+  padding: 0 10px;
+  background: var(--map-surface);
+  color: var(--map-text);
+  border: 1px solid var(--map-border);
+  border-radius: 9px;
+  box-shadow: 0 2px 9px var(--map-shadow);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.priceLabel {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hotelPin {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 2px solid var(--map-surface);
+  border-radius: 11px 11px 11px 4px;
+  background: var(--map-primary);
+  color: var(--map-surface);
+  box-shadow: 0 3px 10px var(--map-shadow);
+  cursor: pointer;
+  transform: rotate(-6deg);
+}
+.hotelPin svg {
+  width: 19px;
+  height: 19px;
+  transform: rotate(6deg);
+}
+.hotelPin.selectedPrice {
+  outline: 3px solid var(--map-surface);
+  outline-offset: 2px;
+}
+/* С оценкой метка в две строки: название или цена, под ними «★ 4,6». */
+.price.rated {
+  height: auto;
+  padding: 4px 10px;
+  line-height: 16px;
+}
+.rating {
+  display: block;
+  font-size: 12px;
+}
+.ratingStar {
+  color: #ffb800;
+}
+.price.selectedPrice {
+  background: var(--map-primary);
+  border-color: var(--map-primary);
+  color: var(--map-surface);
+}
+.nearbyHotelMarker {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  min-width: 82px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #101722;
+  color: white;
+  box-shadow: 0 10px 24px rgb(16 23 34 / 28%);
+  font-size: 0;
+}
+.nearbyHotelMarker::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  background: currentColor;
+  clip-path: polygon(
+    50% 5%,
+    91% 39%,
+    82% 39%,
+    82% 91%,
+    58% 91%,
+    58% 61%,
+    42% 61%,
+    42% 91%,
+    18% 91%,
+    18% 39%,
+    9% 39%
+  );
+}
+.nearbyHotelMarker.selectedPrice {
+  background: #101722;
+  border-color: transparent;
+  color: white;
+}
+.nearbyMap :global(.ol-overlaycontainer-stopevent) {
+  z-index: 2;
+}
+.nearbyMap :global(.ol-scale-line) {
+  display: none;
+}
+.nearbyPlaceMarker {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  place-items: center;
+  border: 3px solid #fff;
+  border-radius: 15px;
+  color: #263c32;
+  background: #e8ddc8;
+  box-shadow: 0 8px 18px rgb(27 42 34 / 22%);
+  cursor: pointer;
+}
+.nearbyPlaceMarker[data-kind='pier'] {
+  background: #dbe9ee;
+  color: #31576a;
+}
+.nearbyPlaceMarker[data-kind='event'] {
+  background: #eedce7;
+  color: #743d60;
+}
+.nearbyPlaceMarker svg {
+  width: 25px;
+  height: 25px;
+}
+.nearbyPlaceMarker:hover {
+  transform: translateY(-2px);
+}
+.nearbyPlaceMarker:focus-visible {
+  outline: 3px solid #101722;
+  outline-offset: 3px;
+}
+.price.comparedPrice {
+  outline: 2px solid var(--map-primary);
+  outline-offset: 2px;
+}
+.pointGroup {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 52px;
+  background: transparent;
+  cursor: pointer;
+}
+.point {
+  display: block;
+  width: 42px;
+  height: 52px;
+}
+.pin {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--map-surface);
+  border: 2px solid var(--map-surface);
+  border-radius: 50% 50% 50% 8px;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px var(--map-shadow);
+  font-size: 24px;
+}
+.pin[data-kind='office'] {
+  background: var(--map-office);
+}
+.pin[data-kind='music'] {
+  background: var(--map-music);
+}
+.pin[data-kind='station'] {
+  background: var(--map-station);
+}
+.pin[data-kind='airport'] {
+  background: #1769aa;
+}
+.pin[data-kind='station'] svg,
+.pin[data-kind='airport'] svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(45deg);
+}
+.pin[data-kind='search'] {
+  background: var(--map-text);
+}
+.pin > span {
+  transform: rotate(45deg);
+}
+.point::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: -3px;
+  left: 15px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--map-surface);
+  border-radius: 50%;
+  background: var(--map-primary);
+  box-shadow: 0 0 0 8px var(--map-primary-soft);
+}
+.pointLabel {
+  position: absolute;
+  left: 56px;
+  bottom: 18px;
+  width: max-content;
+  max-width: 150px;
+  padding: 8px 10px;
+  background: var(--map-surface);
+  color: var(--map-text);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 2px 8px var(--map-shadow);
+}
+.popup {
+  display: grid;
+  gap: 5px;
+  max-width: 230px;
+  padding: 10px 12px;
+  background: var(--map-surface);
+  color: var(--map-text);
+  border-radius: 10px;
+  font-size: 12px;
+  box-shadow: 0 2px 10px var(--map-shadow);
+}
+.popupButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  background: var(--map-primary-soft);
+  color: var(--map-primary);
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.popupButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.eventMarker {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--map-surface);
+  border-radius: 12px 12px 12px 4px;
+  background: #a13f75;
+  color: var(--map-surface);
+  box-shadow: 0 3px 9px var(--map-shadow);
+  cursor: pointer;
+  transform: rotate(-8deg);
+}
+.eventMarker svg {
+  width: 18px;
+  height: 18px;
+  transform: rotate(8deg);
+}
+.eventMarker:hover {
+  background: #81305d;
+}
+.heritageMarker {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--map-surface);
+  border-radius: 15px;
+  background: #d8c4a3;
+  color: #263c32;
+  box-shadow: 0 5px 14px var(--map-shadow);
+  cursor: pointer;
+}
+.heritageMarker:hover {
+  background: #cbb18a;
+}
+.heritageMarker svg {
+  width: 25px;
+  height: 25px;
+}
+.eventMarker:focus-visible,
+.popupButton:focus-visible {
+  outline: 3px solid var(--map-text);
+  outline-offset: 3px;
+}
+
+.hotelPopup {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 10px;
+  width: min(354px, calc(100vw - 24px));
+  min-height: 104px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--map-surface);
+  color: var(--map-text);
+  box-shadow: 0 8px 24px var(--map-shadow);
+  font-family: inherit;
+  font-size: 13px;
+}
+.hotelPopupClose {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--map-surface);
+  color: var(--map-text);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.hotelPopupClose:hover {
+  background: var(--map-primary-soft);
+}
+.hotelPopupImage,
+.hotelPopupImagePlaceholder {
+  display: block;
+  width: 104px;
+  height: 92px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.hotelPopupImagePlaceholder {
+  background: var(--map-primary-soft);
+}
+.hotelPopupContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+  min-width: 0;
+  padding: 6px 4px 4px 0;
+}
+.hotelPopupHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 5px;
+  padding-right: 20px;
+}
+.hotelPopupTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 13px;
+  line-height: 1.25;
+}
+.hotelPopupRating {
+  flex: 0 0 auto;
+  padding: 4px 3px;
+  border-radius: 4px;
+  background: #149b16;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.hotelPopupMeta {
+  overflow: hidden;
+  color: var(--map-text);
+  opacity: 0.7;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hotelPopupFooter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+}
+.hotelPopupPrice {
+  font-size: 15px;
+  line-height: 1.2;
+}
+.hotelPopupPriceBlock {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.hotelPopupPriceUnit {
+  display: none;
+}
+.hotelPopupLink {
+  flex: 0 0 auto;
+  color: var(--map-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.hotelPopupLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.hotelPopupCompare {
+  display: grid;
+  place-items: end center;
+  align-self: flex-end;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--map-text);
+  cursor: pointer;
+}
+.hotelPopupCompare svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.hotelPopupCompare[data-selected='true'] {
+  color: var(--map-primary);
+}
+.hotelPopupCompare:hover {
+  color: var(--map-primary);
+}
+.hotelPopupDetails {
+  display: none;
+}
+.hotelPopupClose:focus-visible,
+.hotelPopupLink:focus-visible,
+.hotelPopupCompare:focus-visible {
+  outline: 3px solid var(--map-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .hotelPopup {
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    width: calc(
+      100vw - max(12px, env(safe-area-inset-left)) - max(12px, env(safe-area-inset-right))
+    );
+    max-height: min(50vh, 340px);
+    overflow: auto;
+    padding: 10px;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .hotelPopupImage,
+  .hotelPopupImagePlaceholder {
+    width: 104px;
+    height: 104px;
+  }
+  .hotelPopupContent {
+    padding: 4px 4px 2px 0;
+  }
+  .hotelPopupTitle {
+    font-size: 15px;
+  }
+  .hotelPopupMeta {
+    font-size: 12px;
+  }
+  .hotelPopupClose {
+    width: 44px;
+    height: 44px;
+    top: 0;
+    right: 0;
+  }
+  .hotelPopupHeading {
+    padding-right: 38px;
+  }
+  .hotelPopupDetails {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 5px;
+    border-top: 1px solid var(--map-border);
+    padding-top: 8px;
+    line-height: 1.4;
+  }
+  .hotelPopupAddress {
+    opacity: 0.7;
+  }
+  .hotelPopupDescription {
+    margin: 0;
+  }
+  .hotelPopupLink {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 9px;
+    border-radius: 8px;
+    background: var(--map-primary);
+    color: var(--map-surface);
+    font-size: 12px;
+  }
+  .hotelPopupCompare {
+    width: 44px;
+    height: 44px;
+  }
+  .hotelPopupLink:hover {
+    text-decoration: none;
+  }
+  .hotelPopupPriceUnit {
+    display: block;
+    font-size: 11px;
+    opacity: 0.7;
+  }
+}
+
+.poi {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 2px solid white;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 3px 8px var(--map-shadow);
+  cursor: pointer;
+}
+.poi:hover {
+  filter: brightness(1.1);
+}
+.poi:focus-visible {
+  outline: 3px solid var(--map-text);
+  outline-offset: 3px;
+}
+
+.nightPlaceMarker {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: 0 3px 8px var(--map-shadow);
+  cursor: pointer;
+}
+.nightPlaceMarker:hover {
+  filter: brightness(1.1);
+}
+.nightPlaceMarker:focus-visible {
+  outline: 3px solid var(--map-text);
+  outline-offset: 3px;
+}
+
+.hotelCluster {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 50%;
+  background: var(--map-primary);
+  color: var(--map-surface);
+  box-shadow: 0 2px 9px var(--map-shadow);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.hotelCluster:hover {
+  filter: brightness(1.12);
+}
+.hotelCluster:focus-visible,
+.price:focus-visible {
+  outline: 3px solid var(--map-text);
+  outline-offset: 3px;
+}

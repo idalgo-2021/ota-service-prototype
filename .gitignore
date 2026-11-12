@@ -1,0 +1,24 @@
+.agents/
+.codex/
+
+# Локальные данные ИИ-агентов и оболочек
+.claude/settings.local.json
+.gemini/tmp/
+.gemini/cache/
+.opencode/cache/
+.opencode/node_modules/
+.opencode/*.db
+.cursor/cache/
+.cursor/indexing/
+.continue/cache/
+.continue/index/
+.windsurf/cache/
+.windsurf/index/
+.qwen/tmp/
+.qwen/cache/
+.roo/cache/
+.kilocode/cache/
+.cline/cache/
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v3

@@ -1,0 +1,46 @@
+# зависимости
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# тестирование
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# продакшн
+/build
+
+# локальные видео
+/public/videos/1/
+
+# разное
+.DS_Store
+*.pem
+
+# отладка
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env-файлы
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Локальные инструкции Codex
+/AGENTS.md
+/CLAUDE.md

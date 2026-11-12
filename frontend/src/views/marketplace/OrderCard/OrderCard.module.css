@@ -1,0 +1,26 @@
+.products,
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.products {
+  min-width: 235px;
+}
+
+.details {
+  min-width: 145px;
+}
+
+.muted {
+  color: #6f747b;
+  font-size: 13px;
+}
+
+.cancellation {
+  max-width: 250px;
+  color: #a42922;
+  font-size: 12px;
+}
